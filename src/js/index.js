@@ -109,7 +109,7 @@ import './custom-clipboard-copy.js';
       ? 'Permission to use webcam was denied or video Autoplay is disabled. Reload the page to give appropriate permissions to webcam.'
       : error.message;
 
-    cameraPanel.innerHTML = /* html */`<div class="alert alert-danger" role="alert" style="margin: 0;">${errorMessage}</div>`;
+    //cameraPanel.innerHTML = /* html */`<div class="alert alert-danger" role="alert" style="margin: 0;">${errorMessage}</div>`;
   }, {
     once: true
   });
@@ -303,6 +303,8 @@ import './custom-clipboard-copy.js';
 
   function emptyResults(resultDialog) {
     resultDialog?.querySelector('.results__item')?.remove();
+    document.querySelector('#id_kode').value = '';
+    document.querySelector('#id_jumlah').value = '';
   }
 
   async function createResult(value, resultDialog) {
@@ -311,6 +313,9 @@ import './custom-clipboard-copy.js';
     }
 
     emptyResults(resultDialog);
+
+    document.querySelector('#id_kode').value = value;
+    document.querySelector('#id_jumlah').focus()
 
     let resultItem;
 
