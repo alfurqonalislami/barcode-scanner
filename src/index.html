@@ -205,6 +205,7 @@
             <input name="jumlah" id="id_jumlah" x-ref="jumlah" type="number">
             <br>
             <button x-on:click="simpan()" type="button">Simpan</button>
+            <button x-on:click="reset()" type="button">Reset</button>
             <a x-ref="csvbtn">Download CSV</a>
             <table>
               <thead>
@@ -288,6 +289,7 @@
             <input name="jumlah" id="id_jumlah2" x-ref="jumlah" type="number">
             <br>
             <button x-on:click="simpan()" type="button">Simpan</button>
+            <button x-on:click="reset()" type="button">Reset</button>
             <a x-ref="csvbtn">Download CSV</a>
             <table>
               <thead>
@@ -341,9 +343,19 @@
         items: [],
 
         init() {
+          saved = localStorage.getItem('_afta_barcode_');
+          if (saved) {
+            this.items = JSON.parse(saved);
+            this.csv();
+          }
         },
-
+        reset() {
+          this.items = [];
+          localStorage.removeItem('_afta_barcode_');
+          this.$refs.csvbtn.style.display = 'none';
+        },
         simpan() {
+          console.log(this.items);
           let kode = this.$refs.kode;
           let jumlah = this.$refs.jumlah;
           let cek = this.items.filter((item) => item[0] == kode.value)
@@ -365,8 +377,9 @@
             // this.items[kode.value] = jumlah.value;
             this.items.push([kode.value, jumlah.value]);
           }
-          // localStorage.setItem('_afta_barcode_', JSON.stringify(this.items));
+          localStorage.setItem('_afta_barcode_', JSON.stringify(this.items));
           this.csv();
+          this.$refs.csvbtn.style.display = 'inline';
           kode.value = '';
           jumlah.value = 0;
         },
