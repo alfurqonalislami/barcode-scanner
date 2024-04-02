@@ -306,7 +306,7 @@
               </tbody>
             </table>
           </div>
- 
+
           <div class="results__actions">
             <!-- <custom-clipboard-copy from="#fileResults .results__item"></custom-clipboard-copy> -->
 
@@ -346,8 +346,25 @@
         simpan() {
           let kode = this.$refs.kode;
           let jumlah = this.$refs.jumlah;
-          // this.items[kode.value] = jumlah.value;
-          this.items.push([kode.value, jumlah.value]);
+          let cek = this.items.filter((item) => item[0] == kode.value)
+          if (cek.length > 0) {
+            // barcode sudah ada
+            if (confirm('Nomor barcode sudah ada, apakah lanjut simpan?')) {
+              this.items.forEach((el, i) => {
+                if (el[0] == kode.value) {
+                  // update jumlah
+                  this.items[i][1] = jumlah.value;
+                }
+              });
+            } else {
+              // simpan sbg entri baru
+              this.items.push([kode.value, jumlah.value]);
+            }
+          } else {
+            // barcode baru
+            // this.items[kode.value] = jumlah.value;
+            this.items.push([kode.value, jumlah.value]);
+          }
           // localStorage.setItem('_afta_barcode_', JSON.stringify(this.items));
           this.csv();
           kode.value = '';
