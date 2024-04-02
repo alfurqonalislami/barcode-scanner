@@ -214,10 +214,10 @@
                 </tr>
               </thead>
               <tbody>
-                <template x-for="(item, index) in items">
+                <template x-for="item in items">
                   <tr>
-                    <td x-text="index"></td>
-                    <td x-text="item"></td>
+                    <td x-text="item[0]"></td>
+                    <td x-text="item[1]"></td>
                   </tr>
                 </template>
               </tbody>
@@ -338,16 +338,16 @@
   <script>
     document.addEventListener('alpine:init', () => {
       Alpine.data('barkot', () => ({
-        items: {},
+        items: [],
 
         init() {
-          console.log(this.$refs.kode);
         },
 
         simpan() {
           let kode = this.$refs.kode;
           let jumlah = this.$refs.jumlah;
-          this.items[kode.value] = jumlah.value;
+          // this.items[kode.value] = jumlah.value;
+          this.items.push([kode.value, jumlah.value]);
           // localStorage.setItem('_afta_barcode_', JSON.stringify(this.items));
           this.csv();
           kode.value = '';
@@ -355,15 +355,18 @@
         },
 
         csv() {
-          data = [['Barcode', 'Jumlah']];
-          for (let kode in this.items) {
-            data.push([kode, this.items[kode]]);
-          }
-          const csvContent = data.map(row => row.join(",")).join("\n");
+          // data = [['Barcode', 'Jumlah']];
+          // for (let kode in this.items) {
+          //   data.push([kode, this.items[kode]]);
+          // }
+          // const csvContent = data.map(row => row.join(",")).join("\n");
+          const csvContent = 'Barcode,Jumlah\n' + this.items.map(row => row.join(",")).join("\n");
+          // console.log(csvContent);
           const blob = new Blob([csvContent], { type: 'text/csv' });
           const url = URL.createObjectURL(blob);
           this.$refs.csvbtn.setAttribute("href", url);
-          this.$refs.csvbtn.setAttribute('download', 'afta.csv');
+          let d = new Date();
+          this.$refs.csvbtn.setAttribute('download', 'afta-'+d.toISOString()+'.csv');
 
           // Clean up
           // URL.revokeObjectURL(url);
