@@ -396,8 +396,16 @@
           const url = URL.createObjectURL(blob);
           this.$refs.csvbtn.setAttribute("href", url);
           let d = new Date();
-          this.$refs.csvbtn.setAttribute('download', 'afta-'+d.toISOString()+'.csv');
+          let filename = 'afta-'+d.toISOString()+'.csv';
+          this.$refs.csvbtn.setAttribute('download', filename);
 
+          // share the csv
+          const shareEl = document.querySelector('web-share');
+          if (shareEl) {
+            shareEl.shareFiles = [
+              new File([csvContent], filename, { type: 'text/csv' }),
+            ];
+          }
           // Clean up
           // URL.revokeObjectURL(url);
         }

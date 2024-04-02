@@ -354,11 +354,11 @@ import './custom-clipboard-copy.js';
       webShareEl.disabled = !isValidValue;
       webShareEl.hidden = !isValidValue;
 
-      if (isValidValue) {
-        webShareEl.setAttribute('share-text', value);
-      } else {
-        webShareEl.removeAttribute('share-text');
-      }
+      // if (isValidValue) {
+      //   webShareEl.setAttribute('share-text', value);
+      // } else {
+      //   webShareEl.removeAttribute('share-text');
+      // }
     }
 
     resultDialog.show();
