@@ -200,15 +200,31 @@
         <dialog id="cameraResults" class="results" style="display: block;">
           <div x-data="barkot">
             <label for="id_kode">Kode</label>
-            <input name="kode" id="id_kode" x-model="kode" type="text">
+            <input name="kode" id="id_kode" x-ref="kode" type="text">
             <label for="id_jumlah">Jumlah</label>
-            <input name="jumlah" id="id_jumlah" x-model="jumlah" type="number">
+            <input name="jumlah" id="id_jumlah" x-ref="jumlah" type="number">
             <br>
             <button x-on:click="simpan()" type="button">Simpan</button>
-            <button x-on:click="csv()" type="button">Download CSV</button>
+            <a x-ref="csvbtn">Download CSV</a>
+            <table>
+              <thead>
+                <tr>
+                  <th>Barcode</th>
+                  <th>Jumlah</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="(item, index) in items">
+                  <tr>
+                    <td x-text="index"></td>
+                    <td x-text="item"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
           </div>
           <div class="results__actions">
-            <custom-clipboard-copy from="#cameraResults .results__item"></custom-clipboard-copy>
+            <!-- <custom-clipboard-copy from="#cameraResults .results__item"></custom-clipboard-copy> -->
 
             <web-share>
               <button slot="button" type="button">
@@ -265,8 +281,34 @@
         </files-dropzone>
 
         <dialog id="fileResults" class="results">
+          <div x-data="barkot">
+            <label for="id_kode2">Kode</label>
+            <input name="kode" id="id_kode2" x-ref="kode" type="text">
+            <label for="id_jumlah2">Jumlah</label>
+            <input name="jumlah" id="id_jumlah2" x-ref="jumlah" type="number">
+            <br>
+            <button x-on:click="simpan()" type="button">Simpan</button>
+            <a x-ref="csvbtn">Download CSV</a>
+            <table>
+              <thead>
+                <tr>
+                  <th>Barcode</th>
+                  <th>Jumlah</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="(item, index) in items">
+                  <tr>
+                    <td x-text="index"></td>
+                    <td x-text="item"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+ 
           <div class="results__actions">
-            <custom-clipboard-copy from="#fileResults .results__item"></custom-clipboard-copy>
+            <!-- <custom-clipboard-copy from="#fileResults .results__item"></custom-clipboard-copy> -->
 
             <web-share>
               <button slot="button" type="button" title="Share">
@@ -296,20 +338,35 @@
   <script>
     document.addEventListener('alpine:init', () => {
       Alpine.data('barkot', () => ({
-        kode: '',
-        jumlah: 0,
+        items: {},
 
         init() {
-          console.log('init barkot');
+          console.log(this.$refs.kode);
         },
 
         simpan() {
-          console.log('simpan...');
-          localStorage.setItem('_afta_', '');
+          let kode = this.$refs.kode;
+          let jumlah = this.$refs.jumlah;
+          this.items[kode.value] = jumlah.value;
+          // localStorage.setItem('_afta_barcode_', JSON.stringify(this.items));
+          this.csv();
+          kode.value = '';
+          jumlah.value = 0;
         },
 
         csv() {
-          console.log('download csv...');
+          data = [['Barcode', 'Jumlah']];
+          for (let kode in this.items) {
+            data.push([kode, this.items[kode]]);
+          }
+          const csvContent = data.map(row => row.join(",")).join("\n");
+          const blob = new Blob([csvContent], { type: 'text/csv' });
+          const url = URL.createObjectURL(blob);
+          this.$refs.csvbtn.setAttribute("href", url);
+          this.$refs.csvbtn.setAttribute('download', 'afta.csv');
+
+          // Clean up
+          // URL.revokeObjectURL(url);
         }
       }))
     })

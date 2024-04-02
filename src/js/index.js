@@ -303,8 +303,8 @@ import './custom-clipboard-copy.js';
 
   function emptyResults(resultDialog) {
     resultDialog?.querySelector('.results__item')?.remove();
-    document.querySelector('#id_kode').value = '';
-    document.querySelector('#id_jumlah').value = '';
+    resultDialog.querySelector('input[name=kode]').value = '';
+    resultDialog.querySelector('input[name=jumlah]').value = 0;
   }
 
   async function createResult(value, resultDialog) {
@@ -313,9 +313,6 @@ import './custom-clipboard-copy.js';
     }
 
     emptyResults(resultDialog);
-
-    document.querySelector('#id_kode').value = value;
-    document.querySelector('#id_jumlah').focus()
 
     let resultItem;
 
@@ -340,7 +337,7 @@ import './custom-clipboard-copy.js';
 
     resultItem.className = 'results__item';
     resultItem.classList.toggle('results__item--no-barcode', value === NO_BARCODE_DETECTED);
-    resultItem.textContent = value;
+    // resultItem.textContent = value;
 
     resultDialog.insertBefore(resultItem, resultDialog.querySelector('.results__actions'));
 
@@ -365,6 +362,10 @@ import './custom-clipboard-copy.js';
     }
 
     resultDialog.show();
+
+    resultDialog.querySelector('input[name=kode]').value = value;
+    resultDialog.querySelector('input[name=jumlah]').focus();
+    resultDialog.querySelector('input[name=jumlah]').select();
   }
 
   function detectBarcode(source) {
